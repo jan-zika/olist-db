@@ -1,5 +1,5 @@
 -- ============================================================
--- queries_michael.sql
+-- 02_queries_michael.sql
 -- Author: Michael Amaya
 -- Theme:  Customer & Delivery Behavior
 -- ============================================================

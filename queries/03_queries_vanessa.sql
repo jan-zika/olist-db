@@ -1,5 +1,5 @@
 -- ============================================================
--- queries_vanessa.sql
+-- 03_queries_vanessa.sql
 -- Author: Vanessa Quiroz
 -- Theme:  Seller & Product Performance
 -- ============================================================
