@@ -46,15 +46,21 @@ This project uses the [Olist E-Commerce Dataset](https://www.kaggle.com/datasets
 - What does the marketing lead conversion funnel look like?
 - Is there a correlation between freight cost and product weight?
 
+### Bonus — Geolocation Analysis (Jan Zika)
+- Which seller-to-customer city routes handle the most orders?
+- Does freight cost increase with distance?
+- Introduces `vw_geo`: a reusable view that deduplicates the geolocation table and pre-computes seller-to-customer distance per order
+
 ---
 
 ## Repository Structure
 
 ```
 queries/
-  queries_jan.sql          -- Sales & Revenue queries (Jan Zika)
-  queries_michael.sql      -- Customer & Delivery queries (Michael Amaya)
-  queries_vanessa.sql      -- Seller & Product queries (Vanessa Quiroz)
+  01_queries_jan.sql       -- Sales & Revenue (Jan Zika)
+  02_queries_michael.sql   -- Customer & Delivery (Michael Amaya)
+  03_queries_vanessa.sql   -- Seller & Product Performance (Vanessa Quiroz)
+  04_queries_bonus.sql     -- Geolocation analysis via vw_geo (Jan Zika)
 
 visualizations/
   README.md                -- Visualization descriptions
