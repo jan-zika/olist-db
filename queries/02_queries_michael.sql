@@ -13,7 +13,7 @@ SELECT
     END AS DeliveryStatus,
     COUNT(*) AS OrderCount,
     CAST(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER() AS DECIMAL(10,2)) AS Percentage
-FROM olist_orders_dataset
+FROM orders
 WHERE order_status = 'delivered'
 GROUP BY 
     CASE 
@@ -26,8 +26,8 @@ GROUP BY
 SELECT 
     review_score, 
     COUNT(*) AS TotalReviews,
-    REPLICATE('★', review_score) AS Stars
-FROM olist_order_reviews_dataset
+    REPLICATE('*', review_score) AS Stars
+FROM order_reviews
 GROUP BY review_score
 ORDER BY review_score DESC;
 
@@ -36,7 +36,7 @@ SELECT COUNT(*) AS RepeatCustomerCount
 FROM (
     SELECT c.customer_unique_id
     FROM Customers c
-    JOIN olist_orders_dataset o ON c.customer_id = o.customer_id
+    JOIN orders o ON c.customer_id = o.customer_id
     GROUP BY c.customer_unique_id
     HAVING COUNT(o.order_id) > 1
 ) AS RepeatCustomers;
@@ -45,6 +45,6 @@ FROM (
 SELECT 
     order_status, 
     COUNT(*) AS TotalOrders
-FROM olist_orders_dataset
+FROM orders
 GROUP BY order_status
 ORDER BY TotalOrders DESC;
