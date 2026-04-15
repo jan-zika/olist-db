@@ -85,7 +85,8 @@ SELECT TOP 10
     ' -> ' +
     c.customer_city + ' (' + g.customer_state + ')'   AS route,
     COUNT(*)                                          AS order_count,
-    CAST(AVG(g.distance_km)   AS DECIMAL(10,1))       AS avg_distance_km,
+    CAST(AVG(g.distance_km)          AS DECIMAL(10,1)) AS avg_distance_km,
+    CAST(AVG(g.distance_km) * 0.6214 AS DECIMAL(10,1)) AS avg_distance_mi,
     CAST(AVG(g.freight_value) AS DECIMAL(10,2))       AS avg_freight_value
 FROM vw_geo g
 JOIN order_items oi ON oi.order_id   = g.order_id
