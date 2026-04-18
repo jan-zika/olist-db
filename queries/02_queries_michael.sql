@@ -35,17 +35,19 @@ ORDER BY review_score DESC;
 -- Q07: How many customers have placed more than one order?
 SELECT 
     FORMAT(o.order_purchase_timestamp, 'yyyy-MM') AS OrderMonth,
-    COUNT(DISTINCT c.customer_unique_id) AS RepeatCustomerCount
+    COUNT(DISTINCT c.customer_unique_id) AS TotalCustomers,
+    COUNT(DISTINCT CASE 
+        WHEN Repeats.customer_unique_id IS NOT NULL THEN c.customer_unique_id 
+    END) AS RepeatCustomers
 FROM Customers c
 JOIN olist_orders_dataset o ON c.customer_id = o.customer_id
-WHERE c.customer_unique_id IN (
-
+LEFT JOIN (
     SELECT c2.customer_unique_id
     FROM Customers c2
     JOIN olist_orders_dataset o2 ON c2.customer_id = o2.customer_id
     GROUP BY c2.customer_unique_id
     HAVING COUNT(o2.order_id) > 1
-)
+) AS Repeats ON c.customer_unique_id = Repeats.customer_unique_id
 GROUP BY FORMAT(o.order_purchase_timestamp, 'yyyy-MM')
 ORDER BY OrderMonth;
 
@@ -53,6 +55,7 @@ ORDER BY OrderMonth;
 SELECT 
     order_status, 
     COUNT(*) AS TotalOrders
-FROM orders
+FROM olist_orders_dataset
+WHERE order_status != 'delivered'
 GROUP BY order_status
-ORDER BY TotalOrders DESC;
+ORDER BY TotalOrders DESC;;
