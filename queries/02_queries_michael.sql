@@ -26,7 +26,7 @@ GROUP BY
 SELECT 
     review_score, 
     COUNT(*) AS TotalReviews,
-    REPLICATE('*', review_score) AS Stars
+    REPLICATE(N'★', review_score) AS Stars
 FROM order_reviews
 GROUP BY review_score
 ORDER BY review_score DESC;
