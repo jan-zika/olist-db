@@ -7,11 +7,11 @@
 
 -- Q09: Who are the top sellers by total revenue?
 -- TODO
-SELECT 
+SELECT Top 10
     oi.seller_id,
     SUM(oi.price) AS total_revenue,
     COUNT(DISTINCT oi.order_id) AS total_orders
-FROM olist_order_items oi
+FROM dbo.order_items oi
 GROUP BY oi.seller_id
 ORDER BY total_revenue DESC;
 
