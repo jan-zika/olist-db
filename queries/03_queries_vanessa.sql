@@ -17,10 +17,19 @@ ORDER BY total_revenue DESC;
 
 -- Q10: Which product categories receive the most orders?
 -- TODO
-
+SELECT 
+    ISNULL(p.product_category_name, 'Unknown') AS Category,
+    COUNT(*) AS Total_items_sold
+FROM dbo.order_items oi
+JOIN dbo.products p
+    ON oi.product_id = p.product_id
+GROUP BY p.product_category_name
+ORDER BY total_items_sold DESC;
 
 -- Q11: What does the conversion from qualified leads to closed deals look like by lead source?
 -- TODO
+
+
 
 
 -- Q12: Is there a relationship between product weight and freight cost?
