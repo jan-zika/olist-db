@@ -24,11 +24,11 @@ GROUP BY
 
 -- Q06: What is the distribution of customer review scores (1–5)?
 SELECT 
-    review_score,
+    review_score AS ReviewScore,
     COUNT(*) AS TotalReviews, 
     REPLICATE(N'★', review_score) AS RatingLabel,
-    FORMAT(COUNT(*), '#,###') AS TotalReviews_Formatted
-FROM order_status
+    CAST(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER() AS DECIMAL(5,2)) AS Percentage
+FROM order_reviews
 GROUP BY review_score
 ORDER BY review_score DESC;
 
