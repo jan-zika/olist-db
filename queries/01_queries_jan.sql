@@ -49,10 +49,10 @@ GROUP BY order_status
 UNION ALL
 
 SELECT
-    'delivered (trimmed)'                                                              AS order_status,
-    COUNT(*)                                                                           AS order_count,
-    CAST(MIN(o.order_purchase_timestamp) AS DATE)                                      AS first_order,
-    CAST(MAX(o.order_purchase_timestamp) AS DATE)                                      AS last_order,
+    'delivered (trimmed)'                                                                  AS order_status,
+    COUNT(*)                                                                               AS order_count,
+    CAST(MIN(o.order_purchase_timestamp) AS DATE)                                          AS first_order,
+    CAST(MAX(o.order_purchase_timestamp) AS DATE)                                          AS last_order,
     DATEDIFF(MONTH, MIN(o.order_purchase_timestamp), MAX(o.order_purchase_timestamp)) / 12 AS span_years,
     DATEDIFF(MONTH, MIN(o.order_purchase_timestamp), MAX(o.order_purchase_timestamp)) % 12 AS span_months
 FROM orders o
