@@ -70,9 +70,9 @@ GROUP BY lq.origin
 ORDER BY converted_leads DESC;
 
 
--- Q12: Is there a relationship between product weight and freight cost?
+-- Q12a: Is there a relationship between product weight and freight cost?
 -- TODO
-
+-- Aggregated in Buckets
 SELECT
    CASE
        WHEN p.product_weight_g < 500 THEN '< 500 g'
@@ -94,4 +94,21 @@ GROUP BY
        ELSE '5 kg +'
    END
 ORDER BY avg_weight_g;
+
+-- Q12b: Is there a relationship between product weight and freight cost?
+-- TODO
+-- Raw relationship
+SELECT 
+    p.product_weight_g,
+    oi.freight_value
+FROM order_items oi
+JOIN products p 
+    ON p.product_id = oi.product_id
+WHERE p.product_weight_g IS NOT NULL
+  AND oi.freight_value IS NOT NULL
+  ORDER BY oi.freight_value DESC;
+
+
+
+
 
