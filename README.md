@@ -4,6 +4,8 @@
 **Course:** Azure + T-SQL Database Analysis
 **Topic:** Sales performance, customer behavior, and trade route visualization for a large Brazilian e-commerce marketplace
 
+**Database export (.bacpac, 49 MB):** [Download from GitHub Releases](https://github.com/jan-zika/olist-db/releases/tag/v1.0)
+
 ---
 
 ## About the Dataset
@@ -34,7 +36,8 @@ queries/
   02_queries_michael.sql     -- Customer & Delivery (Michael Amaya)
   03_queries_vanessa.sql     -- Seller & Product Performance (Vanessa Quiroz)
   04_queries_bonus.sql       -- Geolocation analysis + vw_geo view (Jan Zika)
-  verify_schema.sql          -- Schema verification script
+  verify_schema.sql          -- Schema verification (SQL Server)
+  verify_schema_sqlite.sql   -- Schema verification (SQLite)
 
 app/
   frontend/

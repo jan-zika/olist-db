@@ -50,17 +50,17 @@ function MapResizer({ containerRef }) {
 }
 
 // Fly to last-added selected city
-function FlyToSelected({ cities, selectedKeys }) {
+function FlyToSelected({ cities, selectedOrder }) {
   const map = useMap()
   const prevSize = useRef(0)
   useEffect(() => {
-    if (selectedKeys.size !== prevSize.current + 1) { prevSize.current = selectedKeys.size; return }
-    prevSize.current = selectedKeys.size
-    const lastKey = [...selectedKeys].at(-1)
-    const city = cities.find(c => cityKey(c) === lastKey)
+    if (selectedOrder.length !== prevSize.current + 1) { prevSize.current = selectedOrder.length; return }
+    prevSize.current = selectedOrder.length
+    const newestKey = selectedOrder[0]
+    const city = cities.find(c => cityKey(c) === newestKey)
     if (!city?.lat || !city?.lng) return
     map.flyTo([city.lat, city.lng], Math.max(map.getZoom(), 6), { duration: 0.6 })
-  }, [selectedKeys.size])
+  }, [selectedOrder.length])
   return null
 }
 
@@ -78,7 +78,7 @@ const fmtR = (n) => n != null
   : '—'
 
 export default function BrazilMap({
-  cities, routes, selectedKeys, onCityClick,
+  cities, routes, selectedKeys, selectedOrder, onCityClick,
   activeLayer, showAllRoutes, topRoutes, routesPerCity, onRoutesShown, onVisibleRoutes, viewMode, isShowAllActive,
 }) {
   const [darkMode, setDarkMode] = useState(true)
@@ -189,7 +189,7 @@ export default function BrazilMap({
         >
           <TileLayer attribution={ATTR} url={darkMode ? TILE_DARK : TILE_LIGHT} key={darkMode ? 'dark' : 'light'} />
           <MapResizer containerRef={mapRef} />
-          <FlyToSelected cities={cities} selectedKeys={selectedKeys} />
+          <FlyToSelected cities={cities} selectedOrder={selectedOrder} />
           <DragTooltipClearer />
 
           {/* ── Route lines ── */}

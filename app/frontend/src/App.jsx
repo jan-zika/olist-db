@@ -387,6 +387,7 @@ export default function App() {
               cities={cities}
               routes={routes}
               selectedKeys={selectedKeys}
+              selectedOrder={selectedOrder}
               onCityClick={toggleCity}
               activeLayer={activeLayer}
               showAllRoutes={showAllRoutes}
