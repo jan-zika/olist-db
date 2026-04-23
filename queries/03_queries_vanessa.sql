@@ -32,7 +32,7 @@ WHERE revenue_rank <= 10
 ORDER BY total_revenue DESC;
 
 
--- Q10: Which product categories receive the most orders?
+-- Q10: Which product categories are most popular by volume?
 -- TODO
 SELECT TOP 10
     ISNULL(p.product_category_name, 'Unknown') AS Category,
