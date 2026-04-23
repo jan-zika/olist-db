@@ -40,14 +40,16 @@ SELECT
         WHEN Repeats.customer_unique_id IS NOT NULL THEN c.customer_unique_id 
     END) AS RepeatCustomers
 FROM Customers c
-JOIN olist_orders_dataset o ON c.customer_id = o.customer_id
+JOIN orders o ON c.customer_id = o.customer_id
 LEFT JOIN (
     SELECT c2.customer_unique_id
     FROM Customers c2
-    JOIN olist_orders_dataset o2 ON c2.customer_id = o2.customer_id
+    JOIN orders o2 ON c2.customer_id = o2.customer_id
     GROUP BY c2.customer_unique_id
     HAVING COUNT(o2.order_id) > 1
 ) AS Repeats ON c.customer_unique_id = Repeats.customer_unique_id
+WHERE o.order_purchase_timestamp >= '2017-01-01'
+  AND o.order_purchase_timestamp < '2018-09-01'
 GROUP BY FORMAT(o.order_purchase_timestamp, 'yyyy-MM')
 ORDER BY OrderMonth;
 
