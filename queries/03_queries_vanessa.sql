@@ -83,26 +83,35 @@ ORDER BY converted_leads DESC;
 -- Q12a: Is there a relationship between product weight and freight cost?
 -- TODO
 -- Aggregated in Buckets
+WITH order_freight_summary AS (
+    -- First, get the total weight and total freight for every individual order
+    SELECT 
+        oi.order_id,
+        SUM(p.product_weight_g) AS order_total_weight,
+        SUM(oi.freight_value) AS order_total_freight
+    FROM order_items oi
+    JOIN products p ON p.product_id = oi.product_id
+    WHERE p.product_weight_g IS NOT NULL
+    GROUP BY oi.order_id
+)
 SELECT
-   CASE
-       WHEN p.product_weight_g < 500 THEN '< 500 g'
-       WHEN p.product_weight_g BETWEEN 500 AND 1999 THEN '500 g - 2 kg'
-       WHEN p.product_weight_g BETWEEN 2000 AND 4999 THEN '2 - 5 kg'
-       ELSE '5 kg +'
-   END AS weight_bucket,
-   COUNT(*) AS item_count,
-   CAST(AVG(p.product_weight_g * 1.0) AS DECIMAL(10,0)) AS avg_weight_g,
-   CAST(AVG(oi.freight_value)         AS DECIMAL(10,2)) AS avg_freight_value
-FROM order_items oi
-JOIN products p ON p.product_id = oi.product_id
-WHERE p.product_weight_g IS NOT NULL
-GROUP BY
-   CASE
-       WHEN p.product_weight_g < 500 THEN '< 500 g'
-       WHEN p.product_weight_g BETWEEN 500 AND 1999 THEN '500 g - 2 kg'
-       WHEN p.product_weight_g BETWEEN 2000 AND 4999 THEN '2 - 5 kg'
-       ELSE '5 kg +'
-   END
+    CASE
+        WHEN order_total_weight < 500 THEN '< 500 g'
+        WHEN order_total_weight BETWEEN 500 AND 1999 THEN '500 g - 2 kg'
+        WHEN order_total_weight BETWEEN 2000 AND 4999 THEN '2 - 5 kg'
+        ELSE '5 kg +'
+    END AS weight_bucket,
+    COUNT(*) AS order_count,
+    CAST(AVG(order_total_weight * 1.0) AS DECIMAL(10,0)) AS avg_weight_g,
+    CAST(AVG(order_total_freight)     AS DECIMAL(10,2)) AS avg_sum_of_freight
+FROM order_freight_summary
+GROUP BY 
+    CASE
+        WHEN order_total_weight < 500 THEN '< 500 g'
+        WHEN order_total_weight BETWEEN 500 AND 1999 THEN '500 g - 2 kg'
+        WHEN order_total_weight BETWEEN 2000 AND 4999 THEN '2 - 5 kg'
+        ELSE '5 kg +'
+    END
 ORDER BY avg_weight_g;
 
 -- Q12b: Is there a relationship between product weight and freight cost?
