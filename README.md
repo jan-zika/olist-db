@@ -2,13 +2,13 @@
 
 **Team:** Michael Amaya, Vanessa Quiroz, Jan Zika
 **Course:** Azure + T-SQL Database Analysis
-**Topic:** Sales performance and customer behavior in a large e-commerce marketplace
+**Topic:** Sales performance, customer behavior, and trade route visualization for a large Brazilian e-commerce marketplace
 
 ---
 
 ## About the Dataset
 
-This project uses the [Olist E-Commerce Dataset](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce), a real Brazilian e-commerce dataset covering 2016–2018. It contains orders, customers, sellers, products, payments, reviews, and marketing leads across 11 tables and ~1.56 million rows.
+This project uses the [Olist E-Commerce Dataset](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce), covering 2016–2018 with orders, customers, sellers, products, payments, and reviews across 11 tables and ~1.56 million rows.
 
 | Table | Rows | Description |
 |---|---|---|
@@ -26,76 +26,134 @@ This project uses the [Olist E-Commerce Dataset](https://www.kaggle.com/datasets
 
 ---
 
-## Analysis Goals
-
-### Jan Zika — Sales & Revenue
-- How has revenue trended over time?
-- Which payment methods are most popular, and what is the average installment count?
-- Which states generate the highest average order value?
-- Which product categories drive the most revenue?
-
-### Michael Amaya — Customer & Delivery Behavior
-- How often are orders delivered on time vs late?
-- What is the distribution of customer review scores?
-- How many customers have placed more than one order?
-- What is the breakdown of orders by status?
-
-### Vanessa Quiroz — Seller & Product Performance
-- Who are the top-performing sellers by revenue?
-- Which product categories are most popular by volume?
-- What does the marketing lead conversion funnel look like?
-- Is there a correlation between freight cost and product weight?
-
-### Bonus — Geolocation Analysis (Jan Zika)
-- Which seller-to-customer city routes handle the most orders?
-- Does freight cost increase with distance?
-- Introduces `vw_geo`: a reusable view that deduplicates the geolocation table and pre-computes seller-to-customer distance per order
-
----
-
 ## Repository Structure
 
 ```
 queries/
-  01_queries_jan.sql       -- Sales & Revenue (Jan Zika)
-  02_queries_michael.sql   -- Customer & Delivery (Michael Amaya)
-  03_queries_vanessa.sql   -- Seller & Product Performance (Vanessa Quiroz)
-  04_queries_bonus.sql     -- Geolocation analysis via vw_geo (Jan Zika)
+  01_queries_jan.sql         -- Sales & Revenue (Jan Zika)
+  02_queries_michael.sql     -- Customer & Delivery (Michael Amaya)
+  03_queries_vanessa.sql     -- Seller & Product Performance (Vanessa Quiroz)
+  04_queries_bonus.sql       -- Geolocation analysis + vw_geo view (Jan Zika)
+  verify_schema.sql          -- Schema verification script
 
-visualizations/
-  README.md                -- Visualization descriptions
-  *.png                    -- Exported charts
+app/
+  frontend/
+    src/
+      App.jsx                -- Root layout + state management
+      api.js                 -- Fetch wrappers (live backend or static JSON)
+      theme.css              -- CSS variables (dark theme)
+      components/
+        BrazilMap.jsx        -- Leaflet map: circles, route lines, tooltips
+    public/
+      cities.json            -- Pre-exported city data (514 KB, 1 674 cities)
+      routes.json            -- Pre-exported route data (12.7 MB, 35 759 routes)
+    index.html
+    package.json
+    vite.config.js           -- Dev proxy: /api → localhost:8000
+    .env.local.example       -- Documents VITE_API_URL for live backend mode
+
+  backend/
+    main.py                  -- FastAPI + pyodbc, /api/cities and /api/routes
+    requirements.txt
+
+  start.ps1                  -- PowerShell launcher (starts both services)
+
+netlify.toml                 -- Netlify build config (base: app/frontend)
 ```
+
+---
+
+## Analysis Goals
+
+### Jan Zika — Sales & Revenue
+- Revenue trend over time
+- Most popular payment methods and average installment count
+- States with highest average order value
+- Product categories driving the most revenue
+
+### Michael Amaya — Customer & Delivery Behavior
+- On-time vs late delivery rate
+- Customer review score distribution
+- Repeat customer rate
+- Order status breakdown
+
+### Vanessa Quiroz — Seller & Product Performance
+- Top-performing sellers by revenue
+- Most popular product categories by volume
+- Marketing lead conversion funnel
+- Freight cost vs product weight correlation
+
+### Bonus — Interactive Trade Route Map (Jan Zika)
+- Interactive Leaflet map of Brazil with seller and buyer cities
+- Seller → customer city routes with order counts, distances, and freight values
+- `vw_geo`: reusable view that deduplicates geolocation and pre-computes seller-to-customer distance per order
+
+---
+
+## Interactive Map App
+
+The `app/` folder contains a full-stack web app for exploring trade routes between cities.
+
+### Features
+- **Three view modes**: Seller (outgoing orders), Buyer (incoming orders), Both (combined GMV)
+- **Four metric layers**: Order count, Order value (revenue/spend), Avg shipping distance, Avg freight cost
+- **City circles** sized and colored by the active metric (log scale, blue → red gradient)
+- **Route lines** between seller and buyer cities, thickness and color by active metric
+- **City selection**: click cities on the map or search by name; multi-select supported
+- **Show top routes** mode: displays the top N routes globally, independent of city selection
+- **Left panel**: scrollable city tiles with per-city stats and individual deselect buttons
+- **Resizable** panel/map split
+
+### Live Demo
+
+Deployed on Netlify using static JSON (no backend required):
+**[https://olist-db.netlify.app](https://olist-db.netlify.app)**
+
+---
+
+## Running Locally
+
+### Option A — Static JSON (no database needed)
+
+The frontend reads pre-exported `cities.json` and `routes.json` from `app/frontend/public/`:
+
+```bash
+cd app/frontend
+npm install
+npm run dev
+```
+
+Open `http://localhost:5173`.
+
+### Option B — Live backend (requires SQL Server connection)
+
+1. Copy `.env.example` to `.env` in the project root and fill in your credentials:
+   ```
+   DB_SERVER=...
+   DB_NAME=...
+   DB_USER=...
+   DB_PASSWORD=...
+   ```
+2. Copy `app/frontend/.env.local.example` to `app/frontend/.env.local` and uncomment `VITE_API_URL=http://localhost:8000`
+3. Launch both services:
+   ```powershell
+   powershell -File app/start.ps1
+   ```
+
+Requires Python 3.11+, Node 18+, and [ODBC Driver 18 for SQL Server](https://learn.microsoft.com/en-us/sql/connect/odbc/download-odbc-driver-for-sql-server).
 
 ---
 
 ## Database Setup
 
-The dataset is hosted on **Azure SQL Database**. See [DATABASE_SETUP.md](DATABASE_SETUP.md) for details on how the data was loaded.
+The full database is available as a `.bacpac` export (49 MB) in the [GitHub Releases](../../releases). Import it into SQL Server or Azure SQL using SSMS: **Tasks → Import Data-tier Application**.
 
-### Connecting Locally
-
-1. Copy `.env.example` to `.env` and fill in the password (obtain from team leader)
-2. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-3. Test your connection:
-   ```bash
-   python test_connection.py
-   ```
-
-You will also need the **ODBC Driver 18 for SQL Server** installed:
-- [Download for Windows/Mac/Linux](https://learn.microsoft.com/en-us/sql/connect/odbc/download-odbc-driver-for-sql-server)
+For local development the app also works without any database — see Option A above.
 
 ---
 
-## Visualizations
+## Deploying to Netlify
 
-<!-- Uncomment once PNG files are exported and added to visualizations/ -->
-<!--
-![Revenue by Month](visualizations/viz_01_revenue_by_month.png)
-![Payment Methods](visualizations/viz_02_payment_methods.png)
-![Review Score Distribution](visualizations/viz_03_review_score_distribution.png)
-![Freight vs Weight](visualizations/viz_04_freight_vs_weight.png)
--->
+The repo includes a `netlify.toml` at the root. Connect the repo in Netlify and it will automatically build from `app/frontend/` and publish `dist/`.
+
+No environment variables are needed for static JSON mode. To point at a live API, set `VITE_API_URL` in Netlify's environment settings.
