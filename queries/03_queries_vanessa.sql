@@ -26,10 +26,14 @@ ranked_sellers AS (
     FROM seller_performance
 )
 
-SELECT *
+SELECT 
+    CONCAT('Seller ', Revenue_rank) AS Seller_Alias,
+    total_revenue,
+    total_orders,
+    avg_order_value
 FROM ranked_sellers
-WHERE revenue_rank <= 10
-ORDER BY total_revenue DESC;
+WHERE Revenue_rank <= 10
+ORDER BY Revenue_rank ASC;
 
 
 -- Q10: Which product categories are most popular by volume?
