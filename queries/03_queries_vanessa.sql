@@ -34,14 +34,28 @@ ORDER BY total_revenue DESC;
 
 -- Q10: Which product categories receive the most orders?
 -- TODO
-SELECT 
+SELECT TOP 10
     ISNULL(p.product_category_name, 'Unknown') AS Category,
+
+    CASE 
+        WHEN p.product_category_name = 'cama_mesa_banho' THEN 'Bed, Bath & Table'
+        WHEN p.product_category_name = 'beleza_saude' THEN 'Beauty & Health'
+        WHEN p.product_category_name = 'esporte_lazer' THEN 'Sports & Leisure'
+        WHEN p.product_category_name = 'moveis_decoracao' THEN 'Furniture & Decor'
+        WHEN p.product_category_name = 'informatica_acessorios' THEN 'Computers & Accessories'
+        WHEN p.product_category_name = 'utilidades_domesticas' THEN 'Home Essentials'
+        WHEN p.product_category_name = 'relogios_presentes' THEN 'Watches & Gifts'
+        WHEN p.product_category_name = 'telefonia' THEN 'Phone'
+        WHEN p.product_category_name = 'ferramentas_jardim' THEN 'Garden Tools'
+        WHEN p.product_category_name = 'automotivo' THEN 'Automotive'
+        ELSE 'Unknown'
+    END AS Category_English,
     COUNT(*) AS Total_items_sold
-FROM dbo.order_items oi
-JOIN dbo.products p
+FROM order_items oi
+JOIN products p
     ON oi.product_id = p.product_id
 GROUP BY p.product_category_name
-ORDER BY total_items_sold DESC;
+ORDER BY Total_items_sold DESC;
 
 -- Q11: What does the conversion from qualified leads to closed deals look like by lead source?
 -- TODO
