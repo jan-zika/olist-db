@@ -1,2 +1,13 @@
 .working/
 .env
+
+# Node
+app/frontend/node_modules/
+app/frontend/dist/
+
+# Python
+app/backend/__pycache__/
+app/backend/*.pyc
+
+# Runtime
+app/.running_pids

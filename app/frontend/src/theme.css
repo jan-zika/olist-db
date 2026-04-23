@@ -1,0 +1,58 @@
+:root {
+  --color-bg:       #0f1117;
+  --color-surface:  #1a1f2e;
+  --color-border:   #2d3748;
+  --color-text:     #e2e8f0;
+  --color-muted:    #718096;
+  --color-subtle:   #a0aec0;
+  --color-blue:     #63b3ed;
+  --color-orange:   #f6ad55;
+  --color-green:    #68d391;
+  --color-purple:   #b794f4;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 13px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  height: 100vh;
+  overflow: hidden;
+}
+
+#root {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Leaflet tooltip dark theme */
+.leaflet-tooltip {
+  background: #1a1f2eee !important;
+  border: 1px solid var(--color-border) !important;
+  color: var(--color-text) !important;
+  border-radius: 6px !important;
+  padding: 6px 10px !important;
+  font-size: 12px !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.5) !important;
+}
+.leaflet-tooltip::before { display: none !important; }
+
+button {
+  cursor: pointer;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  padding: 4px 10px;
+  font-size: 12px;
+  transition: background 0.15s;
+}
+button:hover { background: #2d3748; }
+button.active {
+  background: #2b4c7e;
+  border-color: var(--color-blue);
+  color: var(--color-blue);
+}
