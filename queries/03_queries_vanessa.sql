@@ -7,13 +7,30 @@
 
 -- Q09: Who are the top sellers by total revenue?
 -- TODO
-SELECT Top 10
-    oi.seller_id,
-    SUM(oi.price) AS total_revenue,
-    COUNT(DISTINCT oi.order_id) AS total_orders
-FROM dbo.order_items oi
-GROUP BY oi.seller_id
+WITH seller_performance AS (
+    SELECT 
+        oi.seller_id,
+        SUM(oi.price) AS total_revenue,
+        COUNT(DISTINCT oi.order_id) AS total_orders,
+        SUM(oi.price) * 1.0 / COUNT(DISTINCT oi.order_id) AS avg_order_value
+    FROM order_items oi
+    GROUP BY oi.seller_id
+),
+ranked_sellers AS (
+    SELECT 
+        seller_id,
+        total_revenue,
+        total_orders,
+        avg_order_value,
+        RANK() OVER (ORDER BY total_revenue DESC) AS Revenue_rank
+    FROM seller_performance
+)
+
+SELECT *
+FROM ranked_sellers
+WHERE revenue_rank <= 10
 ORDER BY total_revenue DESC;
+
 
 -- Q10: Which product categories receive the most orders?
 -- TODO
