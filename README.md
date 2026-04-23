@@ -43,8 +43,8 @@ This project uses the [Olist E-Commerce Dataset](https://www.kaggle.com/datasets
 ### Vanessa Quiroz — Seller & Product Performance
 - Who are the top-performing sellers by revenue?
 - Which product categories are most popular by volume?
-- What does the marketing lead conversion funnel look like?
-- Is there a correlation between freight cost and product weight?
+- What does the conversion from qualified leads to closed deals look like by lead source?
+- Is there a relationship between freight cost and product weight?
 
 ### Bonus — Geolocation Analysis (Jan Zika)
 - Which seller-to-customer city routes handle the most orders?
