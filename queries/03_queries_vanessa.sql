@@ -64,14 +64,20 @@ ORDER BY Total_items_sold DESC;
 -- Q11: What does the conversion from qualified leads to closed deals look like by lead source?
 -- TODO
 
-SELECT 
+SELECT TOP 5
     lq.origin,
-    COUNT(DISTINCT lq.mql_id) AS converted_leads
+    COUNT(DISTINCT lc.mql_id) AS Converted_leads,
+    COUNT(DISTINCT lq.mql_id) AS Total_qualified_leads,
+    CAST(
+        COUNT(DISTINCT lc.mql_id) * 100.0 
+        / COUNT(DISTINCT lq.mql_id)
+        AS DECIMAL(5,2)
+    ) AS Conversion_rate_percent
 FROM leads_qualified lq
-INNER JOIN leads_closed lc
+LEFT JOIN leads_closed lc
     ON lq.mql_id = lc.mql_id
 GROUP BY lq.origin
-ORDER BY converted_leads DESC;
+ORDER BY converted_leads DESC; 
 
 
 -- Q12a: Is there a relationship between product weight and freight cost?
